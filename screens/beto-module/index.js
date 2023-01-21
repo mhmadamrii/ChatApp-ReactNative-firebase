@@ -1,31 +1,19 @@
-import React, {
-  Component,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { useState, createContext, useContext, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-
-// firebase authenticated method
+import { View, ActivityIndicator } from "react-native";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./config/firebase";
+import Login from "./screens/Login";
+import Signup from "./screens/Signup";
+import Chat from "./screens/Chat";
+import Home from "./screens/Home";
 
 const Stack = createStackNavigator();
 const AuthenticatedUserContext = createContext({});
 
-// screens
-import Chat from "./screens/Chat";
-import Test from "./screens/Test";
-import Authentication from "./screens/Authentication";
-import { async } from "@firebase/util";
-import { ActivityIndicator, Text } from "react-native";
-import { View } from "react-native-web";
-
 const AuthenticatedUserProvider = ({ children }) => {
-  const [user, setUser] = useState("pedro");
-
+  const [user, setUser] = useState(null);
   return (
     <AuthenticatedUserContext.Provider value={{ user, setUser }}>
       {children}
@@ -33,22 +21,27 @@ const AuthenticatedUserProvider = ({ children }) => {
   );
 };
 
-class ChatStack extends Component {
-  render() {
-    return (
-      <Stack.Navigator defaultScreenOptions={Authentication}>
-        {/* <Stack.Screen name="auth" component={Test} /> */}
-        <Stack.Screen name="auth" component={Authentication} />
-        <Stack.Screen name="chat" component={Chat} />
-      </Stack.Navigator>
-    );
-  }
+function ChatStack() {
+  return (
+    <Stack.Navigator defaultScreenOptions={Home}>
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Chat" component={Chat} />
+    </Stack.Navigator>
+  );
 }
 
-const RootNavigator = () => {
+function AuthStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Signup" component={Signup} />
+    </Stack.Navigator>
+  );
+}
+
+function RootNavigator() {
   const { user, setUser } = useContext(AuthenticatedUserContext);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     // onAuthStateChanged returns an unsubscriber
     const unsubscribeAuth = onAuthStateChanged(
@@ -58,18 +51,23 @@ const RootNavigator = () => {
         setIsLoading(false);
       }
     );
+    // unsubscribe auth listener on unmount
+    return unsubscribeAuth;
   }, [user]);
-
   if (isLoading) {
-    return <ActivityIndicator />;
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
   return (
     <NavigationContainer>
-      {user ? <ChatStack /> : <Authentication />}
+      {user ? <ChatStack /> : <AuthStack />}
     </NavigationContainer>
   );
-};
+}
 
 export default function App() {
   return (

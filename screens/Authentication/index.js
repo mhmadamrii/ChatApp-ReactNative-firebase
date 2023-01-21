@@ -1,5 +1,12 @@
 import React, { Component, useState } from "react";
-import { Text, View, TextInput, TouchableOpacity, Button, ActivityIndicator } from "react-native";
+import {
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Button,
+  ActivityIndicator,
+} from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../config/firebase";
 
@@ -9,6 +16,7 @@ import { _login } from "./styles";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = () => {
     if (email !== "" && password !== "") {
@@ -16,6 +24,11 @@ const Login = () => {
         .then(() => console.log("Login success"))
         .catch((err) => Alert.alert("Login error", err.message));
     }
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
   };
   return (
     <>
@@ -45,7 +58,7 @@ const Login = () => {
 
         <View>
           <TouchableOpacity style={_login.btnLogin} onPress={handleLogin}>
-            <Text>Submit</Text>
+            <Text>{loading ? <ActivityIndicator /> : "submit"}</Text>
           </TouchableOpacity>
         </View>
       </View>
