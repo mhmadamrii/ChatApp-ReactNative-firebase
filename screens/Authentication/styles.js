@@ -3,33 +3,28 @@ import { StyleSheet } from "react-native";
 export const _login = StyleSheet.create({
   container: {
     flex: 1,
-    // borderWidth: 1,
-    borderColor: "red",
   },
   inputGroup: {
-    borderWidth: 1,
-    borderColor: 'red',
     height: 200,
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   input: {
-    borderWidth: 1,
-    borderColor: 'red',
-    marginBottom: 10,
-    padding: 5,
-    height: 40,
-    fontSize: 20
+    padding: 10,
+    height: 100,
+    fontSize: 30,
   },
   btnLogin: {
     borderWidth: 1,
-    height: 100
-  }
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 export const _register = StyleSheet.create({
   container: {
-    flex: 1
-  }
-})
+    flex: 1,
+  },
+});
 
 export default _login;

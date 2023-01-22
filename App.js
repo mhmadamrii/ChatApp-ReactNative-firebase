@@ -16,15 +16,14 @@ const Stack = createStackNavigator();
 const AuthenticatedUserContext = createContext({});
 
 // screens
+import Home from "./screens/Home";
 import Chat from "./screens/Chat";
 import Test from "./screens/Test";
 import Authentication from "./screens/Authentication";
-import { async } from "@firebase/util";
 import { ActivityIndicator, Text } from "react-native";
-import { View } from "react-native-web";
 
 const AuthenticatedUserProvider = ({ children }) => {
-  const [user, setUser] = useState("pedro");
+  const [user, setUser] = useState(null);
 
   return (
     <AuthenticatedUserContext.Provider value={{ user, setUser }}>
@@ -36,8 +35,8 @@ const AuthenticatedUserProvider = ({ children }) => {
 class ChatStack extends Component {
   render() {
     return (
-      <Stack.Navigator defaultScreenOptions={Authentication}>
-        {/* <Stack.Screen name="auth" component={Test} /> */}
+      <Stack.Navigator defaultScreenOptions={Home}>
+        <Stack.Screen name="home" component={Home} />
         <Stack.Screen name="auth" component={Authentication} />
         <Stack.Screen name="chat" component={Chat} />
       </Stack.Navigator>
@@ -58,6 +57,7 @@ const RootNavigator = () => {
         setIsLoading(false);
       }
     );
+    return () => unsubscribeAuth()
   }, [user]);
 
   if (isLoading) {
